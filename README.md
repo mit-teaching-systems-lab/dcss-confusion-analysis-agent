@@ -14,6 +14,9 @@ The core socket service. This coordinates request, analysis and response. This s
 
 This is a placeholder program that consumes the `token` and `url`, and saves the file locally. 
 
+**ALL FILES SAVED ARE LOST ON EVERY DEPLOYMENT**
+
+
 ## Developer Token
 
 Use `8070cb2467d22a15dabafd5f5128cacc04af86f1` for development. This token will not work on production.
