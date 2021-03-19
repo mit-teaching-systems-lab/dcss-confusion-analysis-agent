@@ -1,0 +1,31 @@
+{
+  "name": "dcss-confusion-analysis-agent",
+  "version": "1.0.0",
+  "description": "This repository contains an example websocket service that demonstrates the required functionality for a service to interact with the DCSS platform's AI integrations.",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "start": "nodemon -e js,html server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mit-teaching-systems-lab/dcss-confusion-analysis-agent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mit-teaching-systems-lab/dcss-confusion-analysis-agent/issues"
+  },
+  "homepage": "https://github.com/mit-teaching-systems-lab/dcss-confusion-analysis-agent#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "object-hash": "^2.1.1",
+    "socket.io": "^3.1.1",
+    "socket.io-client": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
