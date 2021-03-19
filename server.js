@@ -75,7 +75,12 @@ io.on('connection', (socket) => {
     //
     // Send the response to the specified private
     // channel for this client socket connection.
-    const message = `Hello, I will analyze your media file. Press the <enter> key to make a remote request using the developer token and mp3 url`;
+
+    const key = agent.configuration.source === 'web'
+      ? '&lt;enter&gt;'
+      : '<enter>';
+
+    const message = `Hello, I will analyze your media file. Press the ${key} key to make a remote request using the developer token and mp3 url`;
     io.to(user.id).emit('interjection', { message });
   }
 

@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+    <h2>Use this to demonstrate send and receive to socket server</h2>
+    <h3>Type in the input and click "Analyze".</h3>
+    <form style="display:inline">
+      <input disabled id="input" value="https://teacher-moments-staging.herokuapp.com/api/media/audio/2660/466c0c30-bd69-4a35-9dd3-b04bbdcf02b5/380/0ec33c6c-9102-4206-bc35-d6e06a85fcb7.mp3" />
+      <input type="submit" value="Analyze" />
+    </form>
+    <button id="end">End</button>
+    <p id="interjection"></p>
+    <p id="outcome"></p>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const port = /***PORT***/; // this is replaced by the server
+      const endpoint = location.origin.replace(/:\d.*/, `:${port}`);
+      const transports = ['websocket', 'polling'];
+
+      // This is the developer token (does not work in production)
+      const token = '8070cb2467d22a15dabafd5f5128cacc04af86f1';
+      const agent = {
+        id: 1,
+        name: 'Confusion Analysis Agent',
+        configuration: {
+          source: 'web'
+        }
+      };
+
+      const chat = {
+        id: 2
+      };
+
+      const user = {
+        id: 3,
+        name: 'Web Page User'
+      };
+
+      const auth = {
+        agent,
+        chat,
+        token,
+        user,
+      };
+
+      const options = {
+        transports,
+        auth
+      };
+
+      console.log('endpoint', endpoint);
+      console.log('options', options);
+
+      const socket = io(endpoint, options);
+
+      const end = document.getElementById('end');
+      const form = document.querySelector('form');
+      const input = document.getElementById('input');
+      const outcome = document.getElementById('outcome');
+      const submit = document.querySelector('input[type=submit]');
+      const interjection = document.getElementById('interjection');
+
+      const key = 'userInput';
+      const annotations = [];
+
+      const onSubmit = () => {
+        const value = input.value;
+        socket.emit('request', {
+          value
+        });
+      };
+
+      end.onclick = () => {
+        socket.emit('end', auth);
+      };
+
+      form.onsubmit = event => {
+        onSubmit();
+        return false;
+      };
+
+      let timeout;
+      socket.on('interjection', ({ message }) => {
+        interjection.innerHTML = message;
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        timeout = setTimeout(() => interjection.innerHTML = '', 5000);
+      });
+
+      socket.on('response', ({ value, result, ...misc }) => {
+        outcome.innerHTML = `The participant's response ${result ? 'did' : 'did not'} sound confused.`;
+        console.log(misc);
+      });
+    </script>
+  </body>
+</html>

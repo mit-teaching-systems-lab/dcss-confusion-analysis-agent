@@ -27,7 +27,9 @@ const endpoint = process.env.NODE_ENV && process.env.NODE_ENV === 'production'
 const agent = {
   id: 1,
   name: 'Confusion Analysis Agent',
-  configuration: {}
+  configuration: {
+    source: 'cli'
+  }
 };
 
 const chat = {
