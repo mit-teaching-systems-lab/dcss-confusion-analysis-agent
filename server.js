@@ -17,7 +17,7 @@ async function isConfused(token, url) {
     return stderr;
   }
   console.log(stdout);
-  return stdout.toString('utf8') === 'True';
+  return stdout.toString('utf8') === 'Yes';
 }
 
 const express = require('express');

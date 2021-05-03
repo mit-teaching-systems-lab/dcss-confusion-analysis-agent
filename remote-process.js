@@ -59,6 +59,7 @@ console.log('options', options);
 const socket = io(endpoint, options);
 
 socket.on('response', ({value, result}) => {
+  console.log(result);
   console.log(`The participant's response ${result ? 'did' : 'did not'} sound confused.`);
 });
 
