@@ -120,6 +120,7 @@ def main():
 
 
 	result = classify(save_path)
+	os.remove(save_path)
 
 	sys.stdout.write(str(result[0]))
 
