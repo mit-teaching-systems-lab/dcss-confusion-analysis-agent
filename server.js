@@ -123,6 +123,7 @@ io.on('connection', (socket) => {
 
     const filename = await requestAndSaveMedia(payload.value, token);
     const result = await isConfused(filename);
+    console.log("Result: isConfused? ", result);
     const response = {
       ...payload,
       result
