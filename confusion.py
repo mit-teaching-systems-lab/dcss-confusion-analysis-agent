@@ -95,7 +95,7 @@ def classify(filename):
 		   'fitch_vtl', 'delta_f', 'vtl_delta_f']
 
 	# Just some non-sense to make this do "something"
-	loaded_clf = pickle.load(open('./confusion.pickle', 'rb'))
+	loaded_clf = pickle.load(open('./confusion_mp3.pickle', 'rb'))
 	audio_feaures = extract_audio_features(filename)
 	return loaded_clf.predict(audio_feaures[features])
 
