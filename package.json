@@ -21,6 +21,7 @@
   "homepage": "https://github.com/mit-teaching-systems-lab/dcss-confusion-analysis-agent#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "got": "^11.8.2",
     "object-hash": "^2.1.1",
     "socket.io": "^3.1.1",
     "socket.io-client": "^3.1.1"

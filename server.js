@@ -8,11 +8,34 @@ try {
   fs = require('fs').promises;
 }
 
+const got = require('got');
+const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-async function isConfused(token, url) {
-  const { stdout, stderr } = await exec(`python3 ./confusion.py --token ${token} --url ${url}`);
+async function requestAndSaveMedia(url, token) {
+  const options = token ? {
+    headers: {
+      'X-DCSS-MEDIA-REQUEST-TOKEN': token
+    }
+  }: {};
+
+  const request = got(url.trim(), options);
+  const buffer = await request.buffer();
+  const filename = path.join('./media', path.basename(url));
+
+  if (buffer.length) {
+    await fs.writeFile(filename, buffer);
+    return filename;
+  }
+
+  return null;
+}
+
+async function isConfused(filename) {
+  const { stdout, stderr } = await exec(
+    `python3 ./confusion.py --file ${filename}`
+  );
   if (stderr) {
     return stderr;
   }
@@ -80,8 +103,11 @@ io.on('connection', (socket) => {
       ? '&lt;enter&gt;'
       : '<enter>';
 
-    const message = `Hello, I will analyze your media file. Press the ${key} key to make a remote request using the developer token and mp3 url`;
-    io.to(user.id).emit('interjection', { message });
+    const messages = [
+      `Hello, I will analyze your media file. Press the ${key} key to make a remote request using the developer token and mp3 url`,
+      `Alternatively, you can paste a url to an mp3 file here, and hit ${key} to analyze.`
+    ];
+    messages.forEach(message => io.to(user.id).emit('interjection', { message }));
   }
 
   /*
@@ -95,9 +121,8 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // "Process" the incoming data
-    const result = await isConfused(token, payload.value);
-
+    const filename = await requestAndSaveMedia(payload.value, token);
+    const result = await isConfused(filename);
     const response = {
       ...payload,
       result

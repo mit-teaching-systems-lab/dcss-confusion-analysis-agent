@@ -1,16 +1,11 @@
 import argparse, os, random, re, shutil, sys
-import urllib.parse
-import urllib.request
 import pickle
 import parselmouth
 import pandas as pd
 from feature_extraction_utils import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--token", help="The X-DCSS-MEDIA-REQUEST-TOKEN")
-parser.add_argument("-u", "--url", help="The URL of the media file to request")
-
-
+parser.add_argument("-f", "--file", help="The local file name to process")
 
 def extract_audio_features(filename):
 
@@ -99,29 +94,13 @@ def classify(filename):
 	audio_feaures = extract_audio_features(filename)
 	return loaded_clf.predict(audio_feaures[features])
 
-def makeHeaders(token):
-	return {'X-DCSS-MEDIA-REQUEST-TOKEN': token}
-
 def main():
 	args = parser.parse_args()
 
-	if args.token == '':
-		sys.exit('--token is empty')
+	if args.file == '':
+		sys.exit('--file is empty')
 
-	if args.url == '':
-		sys.exit('--url is empty')
-
-	urlparts = urllib.parse.urlsplit(args.url)
-	save_path = './media/' + os.path.basename(urlparts.path)
-
-	request = urllib.request.Request(args.url, headers=makeHeaders(args.token))
-	with urllib.request.urlopen(request) as response, open(save_path, 'wb') as out_file:
-			shutil.copyfileobj(response, out_file)
-
-
-	result = classify(save_path)
-	os.remove(save_path)
-
+	result = classify(args.file)
 	sys.stdout.write(str(result[0]))
 
 

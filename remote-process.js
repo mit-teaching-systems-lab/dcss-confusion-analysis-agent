@@ -20,9 +20,10 @@ const rl = readline.createInterface({
 // The developer token
 const token = '8070cb2467d22a15dabafd5f5128cacc04af86f1';
 const transports = ['websocket'];
+const PORT = process.env.PORT || 4000;
 const endpoint = process.env.NODE_ENV && process.env.NODE_ENV === 'production'
   ? 'ws://dcss-caa-production.herokuapp.com'
-  : 'http://localhost:4000';
+  : `http://localhost:${PORT}`;
 
 const agent = {
   id: 1,
@@ -76,10 +77,18 @@ rl.on('line', (line) => {
     return;
   }
 
-  // Hit <enter> to execute
-  socket.emit('request', {
-    value: 'https://teacher-moments-staging.herokuapp.com/api/media/audio/2660/466c0c30-bd69-4a35-9dd3-b04bbdcf02b5/380/0ec33c6c-9102-4206-bc35-d6e06a85fcb7.mp3'
-  });
+  if (!value) {
+    // Hit <enter> to execute
+    socket.emit('request', {
+      value: 'https://teacher-moments-staging.herokuapp.com/api/media/audio/2660/466c0c30-bd69-4a35-9dd3-b04bbdcf02b5/380/0ec33c6c-9102-4206-bc35-d6e06a85fcb7.mp3'
+    });
+  } else {
+    // If value is not "end", assume its a url
+    socket.emit('request', {
+      value
+    });
+  }
+  console.log(`Processing audio...`);
   rl.prompt();
 }).on('close', () => {
   console.log('Goodbye!');
